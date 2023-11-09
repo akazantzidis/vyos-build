@@ -10,7 +10,7 @@ env:
   BRANCH: sagitta
   ARCHITECTURE: amd64
   BUILD_BY: 8426315+akazantzidis@users.noreply.github.com
-  BUILD_TYPE: lts
+  BUILD_TYPE: release
   VERSION: 1.4-lts
   DEBIAN_MIRROR: http://ftp.us.debian.org/debian/
 
