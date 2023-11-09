@@ -15,7 +15,8 @@ env:
   DEBIAN_MIRROR: http://ftp.us.debian.org/debian/
 
 jobs:
-  build:
+  build-and-release:
+    name: "lts release"
     runs-on: ubuntu-latest
     container:
       image: vyos/vyos-build:sagitta
@@ -34,16 +35,18 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: ${{ env.VERSION }}
           prerelease: false
+          title: vyos-${{ env.VERSION }}
           files: |
             vyos-build/build/vyos-${{ env.VERSION }}-*.iso
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
-          path: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
-
+      #- name: Upload artifact
+      #  uses: actions/upload-artifact@v3
+      #  with:
+      #    name: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
+      #    path: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
+#
   #release:
   #  needs: build
   #  runs-on: ubuntu-latest
