@@ -1,7 +1,3 @@
-
-permissions:
-  contents: write
-  
 on:
   workflow_dispatch:
   schedule:
@@ -17,7 +13,7 @@ env:
   DEBIAN_MIRROR: http://ftp.us.debian.org/debian/
 
 jobs:
-  build_release:
+  build:
     runs-on: ubuntu-latest
     container:
       image: vyos/vyos-build:sagitta
@@ -27,19 +23,19 @@ jobs:
       - name: Clone source code
         run: git clone -b $BRANCH --single-branch $GIT_CLONE_URL
 
-      - name: Build ISO
+      - name: Build
         working-directory: ./vyos-build
         run: |
           sudo make clean
           sudo ./build-vyos-image iso --architecture $ARCHITECTURE --build-by $BUILD_BY --build-type $BUILD_TYPE --version $VERSION-$(date +%Y%m%d%H%M)
       
-      - name: Get current date
+      - name: Get date
         id: date
         uses: Kaven-Universe/github-action-current-date-time@v1
         with:
           format: "DD-MM-YYYY"
       
-      - name: Release    
+      - name: Create release and upload artifact  
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,74 +43,12 @@ jobs:
           files: |
             vyos-build/build/vyos-${{ env.VERSION }}-*.iso
 
-      #- name: release
-      #  uses: actions/create-release@v1
-      #  id: create_release
-      #  with:
-      #    draft: false
-      #    prerelease: false
-      #    release_name: ${{ steps.version.outputs.version }}
-      #    tag_name: ${{ github.ref }}
-      #    body_path: CHANGELOG.md
-      #  env:
-      #    GITHUB_TOKEN: ${{ github.token }}
-      #
-      #- name: upload iso
-      #    uses: actions/upload-release-asset@v1
-      #    env:
-      #      GITHUB_TOKEN: ${{ github.token }}
-      #    with:
-      #      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #      asset_path: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
-      #      asset_name: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
-      #      asset_content_type: application/gzip
-      
-      
-      
-      
-      #- uses: "marvinpinto/action-automatic-releases@latest"
-      #  with:
-      #    repo_token: "${{ secrets.GITHUB_TOKEN }}"
-      #    automatic_release_tag: ${{ env.VERSION }}
-      #    prerelease: false
-      #    title: vyos-${{ env.VERSION }}
-      #    files: |
-      #      vyos-build/build/vyos-${{ env.VERSION }}-*.iso
+  cleanup_old_workflow_runs:
+    needs: build-and-release
+    runs-on: ubuntu-latest
 
-      #- name: Upload artifact
-      #  uses: actions/upload-artifact@v3
-      #  with:
-      #    name: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
-      #    path: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
-#
-  #release:
-  #  needs: build
-  #  runs-on: ubuntu-latest
-#
-  #  steps:
-  #    - name: Checkout
-  #      uses: actions/checkout@v4
-#
-  #    - name: Download artifact
-  #      uses: actions/download-artifact@v3
-  #      with:
-  #        name: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
-  #        path: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
-#
-  #    - name: Upload release asset
-  #      env:
-  #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #      run: |
-  #        asset=$(find ./vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso/ -name "vyos-${{ env.VERSION }}-*.iso" | xargs)
-  #        tag_name="v${{ env.VERSION }}"
-  #        hub release edit -a "$asset" -m "" "$tag_name"
-
-  #delete_old_workflow_runs:
-  #  needs: build-and-release
-  #  runs-on: ubuntu-latest
-#
-  #  steps:
-  #    - name: Delete old workflow runs
-  #      uses: GitRML/delete-workflow-runs@main
-  #      with:
-  #        retain_days: 1
+    steps:
+      - name: Delete old workflow runs
+        uses: GitRML/delete-workflow-runs@main
+        with:
+          retain_days: 7
