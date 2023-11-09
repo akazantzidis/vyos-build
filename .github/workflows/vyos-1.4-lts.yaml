@@ -1,4 +1,4 @@
-name: VyOS v1.4 Rolling Release
+name: VyOS v1.4 LTS Release
 
 on:
   workflow_dispatch:
@@ -50,6 +50,9 @@ jobs:
         with:
           name: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
           path: vyos-${{ env.VERSION }}-${{ env.ARCHITECTURE }}-iso
+      
+      - name: Setup hub
+        uses: geertvdc/setup-hub@master
 
       - name: Upload release asset
         env:
