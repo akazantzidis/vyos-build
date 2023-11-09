@@ -70,7 +70,7 @@ jobs:
   #        hub release edit -a "$asset" -m "" "$tag_name"
 
   delete_old_workflow_runs:
-    needs: build
+    needs: build-and-release
     runs-on: ubuntu-latest
 
     steps:
