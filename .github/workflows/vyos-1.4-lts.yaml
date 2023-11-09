@@ -32,10 +32,10 @@ jobs:
           sudo ./build-vyos-image iso --architecture $ARCHITECTURE --build-by $BUILD_BY --build-type $BUILD_TYPE --version $VERSION-$(date +%Y%m%d%H%M)
       
       - name: Get current date
-          id: date
-          uses: Kaven-Universe/github-action-current-date-time@v1
-          with:
-            format: "DD-MM-YYYY"
+        id: date
+        uses: Kaven-Universe/github-action-current-date-time@v1
+        with:
+          format: "DD-MM-YYYY"
       
       - name: Release    
         uses: softprops/action-gh-release@v1
