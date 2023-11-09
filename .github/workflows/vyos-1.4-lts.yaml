@@ -40,6 +40,7 @@ jobs:
       - name: Release    
         uses: softprops/action-gh-release@v1
         with:
+          token: ${{ github.token }}
           tag_name: ${{ env.VERSION }}-${{ steps.date.outputs.time }}
           files: |
             vyos-build/build/vyos-${{ env.VERSION }}-*.iso
