@@ -15,7 +15,7 @@ env:
   DEBIAN_MIRROR: http://ftp.us.debian.org/debian/
 
 jobs:
-  build-and-release:
+  build_release:
     name: "lts release"
     runs-on: ubuntu-latest
     container:
@@ -32,14 +32,45 @@ jobs:
           sudo make clean
           sudo ./build-vyos-image iso --architecture $ARCHITECTURE --build-by $BUILD_BY --build-type $BUILD_TYPE --version $VERSION-$(date +%Y%m%d%H%M)
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Release    
+        uses: softprops/action-gh-release@1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: ${{ env.VERSION }}
-          prerelease: false
-          title: vyos-${{ env.VERSION }}
           files: |
             vyos-build/build/vyos-${{ env.VERSION }}-*.iso
+
+      #- name: release
+      #  uses: actions/create-release@v1
+      #  id: create_release
+      #  with:
+      #    draft: false
+      #    prerelease: false
+      #    release_name: ${{ steps.version.outputs.version }}
+      #    tag_name: ${{ github.ref }}
+      #    body_path: CHANGELOG.md
+      #  env:
+      #    GITHUB_TOKEN: ${{ github.token }}
+      #
+      #- name: upload iso
+      #    uses: actions/upload-release-asset@v1
+      #    env:
+      #      GITHUB_TOKEN: ${{ github.token }}
+      #    with:
+      #      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #      asset_path: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
+      #      asset_name: vyos-build/build/vyos-${{ env.VERSION }}-*.iso
+      #      asset_content_type: application/gzip
+      
+      
+      
+      
+      #- uses: "marvinpinto/action-automatic-releases@latest"
+      #  with:
+      #    repo_token: "${{ secrets.GITHUB_TOKEN }}"
+      #    automatic_release_tag: ${{ env.VERSION }}
+      #    prerelease: false
+      #    title: vyos-${{ env.VERSION }}
+      #    files: |
+      #      vyos-build/build/vyos-${{ env.VERSION }}-*.iso
 
       #- name: Upload artifact
       #  uses: actions/upload-artifact@v3
@@ -69,12 +100,12 @@ jobs:
   #        tag_name="v${{ env.VERSION }}"
   #        hub release edit -a "$asset" -m "" "$tag_name"
 
-  delete_old_workflow_runs:
-    needs: build-and-release
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Delete old workflow runs
-        uses: GitRML/delete-workflow-runs@main
-        with:
-          retain_days: 1
+  #delete_old_workflow_runs:
+  #  needs: build-and-release
+  #  runs-on: ubuntu-latest
+#
+  #  steps:
+  #    - name: Delete old workflow runs
+  #      uses: GitRML/delete-workflow-runs@main
+  #      with:
+  #        retain_days: 1
