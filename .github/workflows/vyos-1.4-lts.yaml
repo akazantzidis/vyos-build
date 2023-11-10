@@ -44,7 +44,7 @@ jobs:
             vyos-build/build/vyos-${{ env.VERSION }}-*.iso
 
   cleanup_old_workflow_runs:
-    needs: build-and-release
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
