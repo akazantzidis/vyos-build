@@ -1,4 +1,4 @@
-name: VyOS LTS build 
+name: VyOS build 
 
 permissions:
   contents: write
@@ -14,7 +14,7 @@ env:
   ARCHITECTURE: amd64
   BUILD_BY: 8426315+akazantzidis@users.noreply.github.com
   BUILD_TYPE: release
-  VERSION: 1.4-lts
+  VERSION: 1.4
   DEBIAN_MIRROR: http://ftp.us.debian.org/debian/
 
 jobs:
