@@ -48,12 +48,12 @@ jobs:
           files: |
             vyos-build/build/vyos-${{ env.VERSION }}-*.iso
 
-  cleanup_old_workflow_runs:
-    needs: build
-    runs-on: ubuntu-latest
+  #cleanup_old_workflow_runs:
+  #  needs: build
+  #  runs-on: ubuntu-latest
 
-    steps:
-      - name: Delete old workflow runs
-        uses: GitRML/delete-workflow-runs@main
-        with:
-          retain_days: 7
+  #  steps:
+  #    - name: Delete old workflow runs
+  #      uses: GitRML/delete-workflow-runs@main
+  #      with:
+  #        retain_days: 7
