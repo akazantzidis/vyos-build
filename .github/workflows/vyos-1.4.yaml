@@ -1,4 +1,4 @@
-name: VyOS build 
+name: VyOS build 1.4
 
 permissions:
   contents: write
